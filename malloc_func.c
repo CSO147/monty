@@ -1,103 +1,73 @@
-#include "Monty.h"
-
-lobal_t vglo;
-
+#include "monty.h"
 /**
- * free_vglo - frees the global variables
- *
- * Return: no return
+ * _calloc - concatenate tw strings specially
+ * @nmemb: number of elements
+ * @size: type of elements
+ * Return: nothing
  */
-void free_vglo(void)
+void *_calloc(unsigned int nmemb, unsigned int size)
 {
-	free_dlistint(vglo.head);
-	free(vglo.buffer);
-	fclose(vglo.fd);
-}
+	void *p = NULL;
+	unsigned int i;
 
-/**
- * start_vglo - initializes the global variables
- *
- * @fd: file descriptor
- * Return: no return
- */
-void start_vglo(FILE *fd)
-{
-	vglo.lifo = 1;
-	vglo.cont = 1;
-	vglo.arg = NULL;
-	vglo.head = NULL;
-	vglo.fd = fd;
-	vglo.buffer = NULL;
-}
-
-/**
- * check_input - checks if the file exists and if the file can
- * be opened
- *
- * @argc: argument count
- * @argv: argument vector
- * Return: file struct
- */
-FILE *check_input(int argc, char *argv[])
-{
-	FILE *fd;
-
-	if (argc == 1 || argc > 2)
+	if (nmemb == 0 || size == 0)
 	{
-		dprintf(2, "USAGE: monty file\n");
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
-
-	fd = fopen(argv[1], "r");
-
-	if (fd == NULL)
+	p = malloc(nmemb * size);
+	if (p == NULL)
 	{
-		dprintf(2, "Error: Can't open file %s\n", argv[1]);
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
-
-	return (fd);
+	for (i = 0; i < (nmemb * size); i++)
+	{
+		*((char *)(p) + i) = 0;
+	}
+	return (p);
 }
-
 /**
- * main - Entry point
- *
- * @argc: argument count
- * @argv: argument vector
- * Return: 0 on success
+ * _realloc - change the size and copy the content
+ * @ptr: malloc pointer to reallocate
+ * @old_size: old number of bytes
+ * @new_size: new number of Bytes
+ * Return: nothing
  */
-int main(int argc, char *argv[])
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	void (*f)(stack_t **stack, unsigned int line_number);
-	FILE *fd;
-	size_t size = 256;
-	ssize_t nlines = 0;
-	char *lines[2] = {NULL, NULL};
+	char *p = NULL;
+	unsigned int i;
 
-	fd = check_input(argc, argv);
-	start_vglo(fd);
-	nlines = getline(&vglo.buffer, &size, fd);
-	while (nlines != -1)
+	if (new_size == old_size)
+		return (ptr);
+	if (ptr == NULL)
 	{
-		lines[0] = _strtoky(vglo.buffer, " \t\n");
-		if (lines[0] && lines[0][0] != '#')
-		{
-			f = get_opcodes(lines[0]);
-			if (!f)
-			{
-				dprintf(2, "L%u: ", vglo.cont);
-				dprintf(2, "unknown instruction %s\n", lines[0]);
-				free_vglo();
-				exit(EXIT_FAILURE);
-			}
-			vglo.arg = _strtoky(NULL, " \t\n");
-			f(&vglo.head, vglo.cont);
-		}
-		nlines = getline(&vglo.buffer, &size, fd);
-		vglo.cont++;
+		p = malloc(new_size);
+		if (!p)
+			return (NULL);
+		return (p);
 	}
-
-	free_vglo();
-
-	return (0);
+	if (new_size == 0 && ptr != NULL)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	if (new_size > old_size)
+	{
+		p = malloc(new_size);
+		if (!p)
+			return (NULL);
+		for (i = 0; i < old_size; i++)
+			p[i] = *((char *)ptr + i);
+		free(ptr);
+	}
+	else
+	{
+		p = malloc(new_size);
+		if (!p)
+			return (NULL);
+		for (i = 0; i < new_size; i++)
+			p[i] = *((char *)ptr + i);
+		free(ptr);
+	}
+	return (p);
 }
