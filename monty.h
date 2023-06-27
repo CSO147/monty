@@ -99,4 +99,4 @@ void free_dlistint(stack_t *head);
 
 /* main */
 void free_vglo(void);
-
+#endif
