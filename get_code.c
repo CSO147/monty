@@ -1,4 +1,4 @@
-#include "Monty.h"
+#include "monty.h"
 /**
  * get_opcodes - selecting the correct opcode to perform
  * @opc: opcode passed

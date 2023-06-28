@@ -1,4 +1,4 @@
-#include "Monty.h"
+#include "monty.h"
 
 /**
  * _rotl - rotating the first element to the bottom and  the second to the top

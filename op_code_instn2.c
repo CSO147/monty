@@ -1,4 +1,4 @@
-#include "Monty.h"
+#include "monty.h"
 
 /**
  * _queue - seting the format of the data to a queue (FIFO)
